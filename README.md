@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# wanted-cloud/terraform-module-template
+# wanted-cloud/terraform-azure-role-assignment
 
-This repository represents a template for a Terraform building block module as we think it should be done, so it's for sure opinionated but in our eyes simple and powerful. Feel free to use or contribute.
+Simple Terraform building blog wrapping resources around Azure IAM role assignment.
 
 ## Table of contents
 
@@ -19,15 +19,53 @@ No requirements.
 
 ## Providers
 
-No providers.
+The following providers are used by this module:
+
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm)
 
 ## Required Inputs
 
-No required inputs.
+The following input variables are required:
+
+### <a name="input_principal_id"></a> [principal\_id](#input\_principal\_id)
+
+Description: The ID of the Principal (User, Group or Service Principal) to assign the Role Definition to.
+
+Type: `string`
+
+### <a name="input_scope"></a> [scope](#input\_scope)
+
+Description: Scope of the role assignment.
+
+Type: `string`
 
 ## Optional Inputs
 
 The following input variables are optional (have default values):
+
+### <a name="input_condition"></a> [condition](#input\_condition)
+
+Description: A condition that must be satisfied for the role assignment to be effective. Changing this forces a new resource to be created.
+
+Type: `string`
+
+Default: `""`
+
+### <a name="input_condition_version"></a> [condition\_version](#input\_condition\_version)
+
+Description: The version of the condition. Changing this forces a new resource to be created.
+
+Type: `string`
+
+Default: `""`
+
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: Description of the role assignment.
+
+Type: `string`
+
+Default: `""`
 
 ### <a name="input_metadata"></a> [metadata](#input\_metadata)
 
@@ -55,13 +93,59 @@ object({
 
 Default: `{}`
 
+### <a name="input_name"></a> [name](#input\_name)
+
+Description: UUID valid name of created role assignment.
+
+Type: `string`
+
+Default: `""`
+
+### <a name="input_principal_type"></a> [principal\_type](#input\_principal\_type)
+
+Description: The type of the principal\_id. Possible values are User, Group and ServicePrincipal. Changing this forces a new resource to be created. It is necessary to explicitly set this attribute when creating role assignments if the principal creating the assignment is constrained by ABAC rules that filters on the PrincipalType attribute.
+
+Type: `string`
+
+Default: `""`
+
+### <a name="input_role_definition_id"></a> [role\_definition\_id](#input\_role\_definition\_id)
+
+Description: The Scoped-ID of the Role Definition. Changing this forces a new resource to be created.
+
+Type: `string`
+
+Default: `""`
+
+### <a name="input_role_definition_name"></a> [role\_definition\_name](#input\_role\_definition\_name)
+
+Description: The name of a built-in Role. Changing this forces a new resource to be created.
+
+Type: `string`
+
+Default: `""`
+
+### <a name="input_skip_service_principal_aad_check"></a> [skip\_service\_principal\_aad\_check](#input\_skip\_service\_principal\_aad\_check)
+
+Description: Flag to skip service principal AAD check.
+
+Type: `bool`
+
+Default: `false`
+
 ## Outputs
 
-No outputs.
+The following outputs are exported:
+
+### <a name="output_role_assignment"></a> [role\_assignment](#output\_role\_assignment)
+
+Description: Value of the role assignment which was created.
 
 ## Resources
 
-No resources.
+The following resources are used by this module:
+
+- [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 
 ## Usage
 
@@ -71,7 +155,7 @@ Module was also published via Terraform Registry and can be used as a module fro
 
 ```hcl
 module "example" {
-  source  = "wanted-cloud/..."
+  source  = "wanted-cloud/role-assignment/azure"
   version = "x.y.z"
 }
 ```
@@ -83,6 +167,12 @@ The minimal usage for the module is as follows:
 ```hcl
 module "template" {
     source = "../.."
+
+    # Name is optional
+    name = "00000000-0000-0000-0000-000000000000"
+    scope = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg"
+    role_definition_name = "Reader"
+    principal_id = "00000000-0000-0000-0000-000000000000"
 }
 ```
 ## Contributing
