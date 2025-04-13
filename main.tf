@@ -15,4 +15,19 @@ resource "azurerm_role_assignment" "this" {
   condition_version                = var.condition_version != "" ? var.condition_version : null
   description                      = var.description != "" ? var.description : null
   skip_service_principal_aad_check = var.skip_service_principal_aad_check
+
+  timeouts {
+    create = try(
+      local.metadata.resource_timeouts["azurerm_role_assignment"]["create"],
+      local.metadata.resource_timeouts["default"]["create"]
+    )
+    read = try(
+      local.metadata.resource_timeouts["azurerm_role_assignment"]["read"],
+      local.metadata.resource_timeouts["default"]["read"]
+    )
+    delete = try(
+      local.metadata.resource_timeouts["azurerm_role_assignment"]["delete"],
+      local.metadata.resource_timeouts["default"]["delete"]
+    )
+  }
 }
